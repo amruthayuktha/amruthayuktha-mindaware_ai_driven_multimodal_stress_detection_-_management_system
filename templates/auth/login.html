@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Mind Aware{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <span class="logo-icon">🧘</span>
+                </div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue your wellness journey</p>
+            </div>
+
+            {% if error %}
+            <div class="auth-error">
+                <span class="error-icon">⚠️</span>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form id="loginForm" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-btn primary">
+                    <span>Sign In</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>or continue as</span>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="auth-btn guest">
+                <span>👤</span>
+                <span>Guest (No Sign In)</span>
+            </a>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{{ url_for('auth_register') }}">Create one</a></p>
+            </div>
+        </div>
+
+        <div class="auth-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+</script>
+{% endblock %}

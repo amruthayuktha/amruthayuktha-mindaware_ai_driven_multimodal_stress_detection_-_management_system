@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Your personal stress relief companion - AI-powered chat with real-time recommendations for videos, music, and wellness resources.">
+    <meta name="keywords"
+        content="stress relief, anxiety help, meditation, relaxation, mental health, emotion detection">
+    <title>Mind Aware - Your Stress Relief Companion</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <h1>Mind Aware</h1>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="chat">
+                    <span class="tab-icon">💬</span>
+                    <span>Chat</span>
+                </button>
+                <button class="nav-tab" data-tab="emotion">
+                    <span class="tab-icon">📹</span>
+                    <span>Face Scan</span>
+                </button>
+                <button class="nav-tab" data-tab="games">
+                    <span class="tab-icon">🎮</span>
+                    <span>Games</span>
+                </button>
+                <button class="nav-tab" data-tab="resources">
+                    <span class="tab-icon">📚</span>
+                    <span>Resources</span>
+                </button>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Chat Section -->
+            <section id="chat-section" class="section active">
+                <div class="chat-container">
+                    <!-- Emotion Selector -->
+                    <div class="emotion-panel">
+                        <p class="emotion-label">How are you feeling? <span id="detectedEmotionBadge"
+                                class="detected-emotion-badge"></span></p>
+                        <div class="emotion-buttons">
+                            <button class="emotion-btn" data-emotion="anxious" title="Anxious">😰</button>
+                            <button class="emotion-btn" data-emotion="stressed" title="Stressed">😫</button>
+                            <button class="emotion-btn" data-emotion="sad" title="Sad">😢</button>
+                            <button class="emotion-btn" data-emotion="tired" title="Tired">😴</button>
+                            <button class="emotion-btn" data-emotion="angry" title="Angry">😤</button>
+                            <button class="emotion-btn" data-emotion="overwhelmed" title="Overwhelmed">🤯</button>
+                            <button class="emotion-btn" data-emotion="neutral" title="Neutral">😐</button>
+                        </div>
+                        <button class="scan-face-btn" id="quickScanBtn">
+                            <span>📹</span> Scan My Face
+                        </button>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <p>Hello! I'm Mind Aware, your stress relief companion. 🌟</p>
+                                <p>Select how you're feeling above, or use <strong>Face Scan</strong> to detect your
+                                    emotion automatically. Then tell me what's on your mind!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="message-avatar">🤖</div>
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="typing-text">Finding helpful resources...</span>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" class="chat-input"
+                            placeholder="Tell me what's on your mind..." autocomplete="off">
+                        <button class="send-btn" id="sendBtn" aria-label="Send message">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emotion Detection Section -->
+            <section id="emotion-section" class="section">
+                <div class="emotion-detection-container">
+                    <div class="section-header">
+                        <h2>🎭 Facial Expression Recognition</h2>
+                        <p>Let AI detect your emotions through your camera for personalized recommendations</p>
+                    </div>
+
+                    <!-- Camera View -->
+                    <div class="camera-card">
+                        <div class="camera-header">
+                            <h3>📹 Live Emotion Detection</h3>
+                            <div class="camera-status" id="cameraStatus">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Ready</span>
+                            </div>
+                        </div>
+
+                        <div class="camera-view">
+                            <video id="emotionVideo" autoplay muted playsinline></video>
+                            <canvas id="emotionCanvas"></canvas>
+                            <div class="camera-overlay" id="cameraOverlay">
+                                <div class="camera-placeholder">
+                                    <span class="placeholder-icon">📷</span>
+                                    <p>Click "Start Camera" to begin emotion detection</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="camera-controls">
+                            <button class="camera-btn primary" id="startCameraBtn">
+                                <span>▶</span> Start Camera
+                            </button>
+                            <button class="camera-btn secondary" id="stopCameraBtn" disabled>
+                                <span>⏹</span> Stop Camera
+                            </button>
+                        </div>
+
+                        <!-- Loading indicator for models -->
+                        <div class="model-loading" id="modelLoading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading AI models...</p>
+                        </div>
+                    </div>
+
+                    <!-- Detected Emotion Display -->
+                    <div class="emotion-result-card" id="emotionResultCard">
+                        <h3>Detected Emotion</h3>
+                        <div class="emotion-display">
+                            <span class="detected-emoji" id="detectedEmoji">😐</span>
+                            <div class="emotion-info">
+                                <span class="emotion-name" id="emotionName">Neutral</span>
+                                <span class="emotion-confidence" id="emotionConfidence">--</span>
+                            </div>
+                        </div>
+
+                        <!-- Expression Breakdown -->
+                        <div class="expression-breakdown" id="expressionBreakdown">
+                            <h4>Expression Analysis</h4>
+                            <div class="expression-bars">
+                                <div class="expression-bar" data-emotion="happy">
+                                    <span class="bar-label">😊 Happy</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-happy"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-happy">0%</span>
+                                </div>
+                                <div class="expression-bar" data-emotion="sad">
+                                    <span class="bar-label">😢 Sad</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-sad"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-sad">0%</span>
+                                </div>
+                                <div class="expression-bar" data-emotion="angry">
+                                    <span class="bar-label">😠 Angry</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-angry"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-angry">0%</span>
+                                </div>
+                                <div class="expression-bar" data-emotion="fearful">
+                                    <span class="bar-label">😨 Fearful</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-fearful"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-fearful">0%</span>
+                                </div>
+                                <div class="expression-bar" data-emotion="surprised">
+                                    <span class="bar-label">😲 Surprised</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-surprised"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-surprised">0%</span>
+                                </div>
+                                <div class="expression-bar" data-emotion="neutral">
+                                    <span class="bar-label">😐 Neutral</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" id="bar-neutral"></div>
+                                    </div>
+                                    <span class="bar-value" id="val-neutral">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Get Recommendations Button -->
+                        <button class="get-recommendations-btn" id="getEmotionRecsBtn">
+                            <span>🎯</span> Get Personalized Recommendations
+                        </button>
+                    </div>
+
+                    <!-- Emotion-Based Recommendations -->
+                    <div class="emotion-recommendations" id="emotionRecommendations">
+                        <h3>🎬 Recommendations Based on Your Expression</h3>
+                        <p class="rec-subtitle">Personalized content to help you feel better</p>
+
+                        <div class="rec-section">
+                            <h4>📹 Videos</h4>
+                            <div class="rec-cards" id="emotionVideoCards">
+                                <!-- Filled dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="rec-section">
+                            <h4>🎵 Music</h4>
+                            <div class="rec-cards" id="emotionMusicCards">
+                                <!-- Filled dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="rec-section">
+                            <h4>📖 Articles</h4>
+                            <div class="rec-cards" id="emotionArticleCards">
+                                <!-- Filled dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Games Section -->
+            <section id="games-section" class="section">
+                <div class="games-container">
+                    <div class="section-header">
+                        <h2>Relaxation Games</h2>
+                        <p>Take a break and clear your mind with these calming games</p>
+                    </div>
+
+                    <!-- Music Suggestion for Games -->
+                    <div class="music-suggestion" id="gameMusicSuggestion">
+                        <span class="suggestion-icon">🎵</span>
+                        <p>Pair your game with relaxing focus music for double the relaxation!</p>
+                        <button class="suggestion-btn" id="playGameMusic">Play Music</button>
+                    </div>
+
+                    <!-- Bubble Shooter Game -->
+                    <div class="game-card featured">
+                        <div class="game-header">
+                            <h3>🫧 Bubble Shooter</h3>
+                            <span class="game-badge">Relaxing</span>
+                        </div>
+                        <div class="game-canvas-container">
+                            <canvas id="bubbleCanvas" width="400" height="500"></canvas>
+                            <div class="game-overlay" id="gameOverlay">
+                                <button class="play-btn" id="startGameBtn">
+                                    <span>▶</span> Start Game
+                                </button>
+                            </div>
+                        </div>
+                        <div class="game-controls">
+                            <div class="score-display">
+                                <span>Score:</span>
+                                <span id="gameScore">0</span>
+                            </div>
+                            <button class="control-btn" id="resetGameBtn">🔄 Reset</button>
+                        </div>
+                        <p class="game-instructions">Click or tap to shoot bubbles. Match 3+ colors to pop them!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources Section -->
+            <section id="resources-section" class="section">
+                <div class="resources-container">
+                    <div class="section-header">
+                        <h2>Wellness Resources</h2>
+                        <p>Curated content to support your mental health journey</p>
+                    </div>
+
+                    <!-- Quick Resources -->
+                    <div class="resource-categories">
+                        <div class="resource-category">
+                            <h3>🧘 Quick Relief</h3>
+                            <div class="resource-cards" id="quickReliefCards">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="resource-category">
+                            <h3>🎵 Calming Music</h3>
+                            <div class="resource-cards" id="calmingMusicCards">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="resource-category">
+                            <h3>📖 Helpful Articles</h3>
+                            <div class="resource-cards" id="helpfulArticleCards">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Resources -->
+                    <div class="emergency-resources">
+                        <h3>🆘 Need Immediate Help?</h3>
+                        <p>If you're in crisis, please reach out to these resources:</p>
+                        <div class="emergency-links">
+                            <a href="https://www.crisistextline.org/" target="_blank" rel="noopener">Crisis Text
+                                Line</a>
+                            <a href="https://suicidepreventionlifeline.org/" target="_blank" rel="noopener">988 Suicide
+                                & Crisis Lifeline</a>
+                            <a href="https://www.7cups.com/" target="_blank" rel="noopener">7 Cups - Free Listening</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2026 Mind Aware. Your wellbeing matters. 💚</p>
+                <a href="/privacy">Privacy Policy</a>
+            </div>
+        </footer>
+
+        <!-- Video Modal -->
+        <div class="modal" id="videoModal">
+            <div class="modal-content">
+                <button class="modal-close" id="closeVideoModal">&times;</button>
+                <div class="video-container" id="videoContainer">
+                    <!-- Video iframe will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <script src="/static/js/emotionDetector.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/bubbleShooter.js"></script>
+</body>
+
+</html>

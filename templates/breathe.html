@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Breathing Exercises - Mind Aware{% endblock %}
+
+{% block content %}
+<section class="breathe-section">
+    <div class="section-header">
+        <h2>🌬️ Breathing Exercises</h2>
+        <p>Take a moment to calm your mind with guided breathing.</p>
+    </div>
+
+    <!-- Pattern Selector -->
+    <div class="pattern-selector">
+        <button class="pattern-btn active" data-pattern="478" data-inhale="4" data-hold="7" data-exhale="8">
+            <span class="pattern-name">4-7-8 Relaxing</span>
+            <span class="pattern-desc">Deep calm & sleep</span>
+        </button>
+        <button class="pattern-btn" data-pattern="box" data-inhale="4" data-hold="4" data-exhale="4" data-hold2="4">
+            <span class="pattern-name">Box Breathing</span>
+            <span class="pattern-desc">Focus & balance</span>
+        </button>
+        <button class="pattern-btn" data-pattern="simple" data-inhale="4" data-hold="0" data-exhale="4">
+            <span class="pattern-name">Simple 4-4</span>
+            <span class="pattern-desc">Quick reset</span>
+        </button>
+        <button class="pattern-btn" data-pattern="energize" data-inhale="4" data-hold="2" data-exhale="2">
+            <span class="pattern-name">Energizing</span>
+            <span class="pattern-desc">Wake up & alert</span>
+        </button>
+    </div>
+
+    <!-- Breathing Circle -->
+    <div class="breathing-container">
+        <div class="breathing-circle-wrapper">
+            <div class="breathing-circle" id="breathingCircle">
+                <div class="circle-inner">
+                    <span class="breath-phase" id="breathPhase">Ready</span>
+                    <span class="breath-timer" id="breathTimer">0</span>
+                </div>
+            </div>
+            <div class="breathing-glow"></div>
+        </div>
+
+        <div class="breathing-controls">
+            <button class="breathe-btn start-btn" id="startBreatheBtn">
+                <span>▶</span> Start
+            </button>
+            <button class="breathe-btn pause-btn" id="pauseBreatheBtn" style="display: none;">
+                <span>⏸</span> Pause
+            </button>
+            <button class="breathe-btn reset-btn" id="resetBreatheBtn">
+                <span>🔄</span> Reset
+            </button>
+        </div>
+
+        <div class="session-info">
+            <div class="session-stat">
+                <span class="stat-label">Cycles</span>
+                <span class="stat-value" id="cycleCount">0</span>
+            </div>
+            <div class="session-stat">
+                <span class="stat-label">Duration</span>
+                <span class="stat-value" id="sessionDuration">0:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Settings -->
+    <div class="session-settings">
+        <h3>⚙️ Settings</h3>
+        <div class="settings-options">
+            <div class="setting-item">
+                <label for="targetCycles">Target Cycles</label>
+                <select id="targetCycles">
+                    <option value="0">Unlimited</option>
+                    <option value="3">3 cycles (~2 min)</option>
+                    <option value="5" selected>5 cycles (~3 min)</option>
+                    <option value="10">10 cycles (~6 min)</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label for="soundToggle">
+                    <input type="checkbox" id="soundToggle" checked>
+                    Sound cues
+                </label>
+            </div>
+            <div class="setting-item">
+                <label for="vibrationToggle">
+                    <input type="checkbox" id="vibrationToggle">
+                    Vibration (mobile)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Info -->
+    <div class="breathing-benefits">
+        <h3>✨ Why Breathe?</h3>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <span class="benefit-icon">😌</span>
+                <h4>Reduce Anxiety</h4>
+                <p>Activates your parasympathetic nervous system</p>
+            </div>
+            <div class="benefit-card">
+                <span class="benefit-icon">🧠</span>
+                <h4>Improve Focus</h4>
+                <p>Increases oxygen flow to your brain</p>
+            </div>
+            <div class="benefit-card">
+                <span class="benefit-icon">😴</span>
+                <h4>Better Sleep</h4>
+                <p>4-7-8 breathing helps you fall asleep faster</p>
+            </div>
+            <div class="benefit-card">
+                <span class="benefit-icon">💪</span>
+                <h4>Build Resilience</h4>
+                <p>Regular practice strengthens stress response</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/breathe.js"></script>
+{% endblock %}

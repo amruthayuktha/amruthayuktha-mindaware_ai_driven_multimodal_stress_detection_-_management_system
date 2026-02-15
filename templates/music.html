@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Calm Music - Mind Aware{% endblock %}
+
+{% block extra_head %}
+<style>
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .video-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .video-info {
+        padding: 1rem 1.25rem;
+    }
+
+    .video-info h4 {
+        margin: 0 0 0.5rem;
+        color: var(--text-color);
+        font-size: 1rem;
+    }
+
+    .video-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .video-duration {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        background: var(--bg-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+
+    .playlist-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .playlist-header h3 {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .playlist-count {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .video-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="music-section">
+    <div class="section-header">
+        <h2>🎵 Calm Music</h2>
+        <p>Curated YouTube playlists to help you relax, focus, or drift off to sleep.</p>
+    </div>
+
+    <!-- Playlist Categories -->
+    <div class="playlist-tabs">
+        <button class="playlist-tab active" data-playlist="focus">
+            <span class="tab-icon">🎯</span>
+            <span class="tab-name">Focus</span>
+        </button>
+        <button class="playlist-tab" data-playlist="calm">
+            <span class="tab-icon">🌸</span>
+            <span class="tab-name">Quick Calm</span>
+        </button>
+        <button class="playlist-tab" data-playlist="sleep">
+            <span class="tab-icon">🌙</span>
+            <span class="tab-name">Sleep</span>
+        </button>
+        <button class="playlist-tab" data-playlist="nature">
+            <span class="tab-icon">🌿</span>
+            <span class="tab-name">Nature</span>
+        </button>
+    </div>
+
+    <!-- Playlists Container -->
+    <div class="playlists-container">
+        <!-- Focus Playlist -->
+        <div class="playlist active" data-playlist="focus">
+            <div class="playlist-header">
+                <h3>🎯 Focus & Concentration</h3>
+                <span class="playlist-count">4 videos</span>
+            </div>
+            <p class="playlist-desc">Lo-fi beats and ambient sounds for deep work and studying</p>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="lofi hip hop radio"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>lofi hip hop radio 📚 beats to relax/study to</h4>
+                        <p>Lofi Girl</p>
+                        <span class="video-duration">🔴 LIVE 24/7</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/5qap5aO4i9A" title="Lo-fi beats"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>lofi hip hop radio 💜 beats to chill/study to</h4>
+                        <p>Lofi Girl</p>
+                        <span class="video-duration">🔴 LIVE 24/7</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/lTRiuFIWV54" title="Study Music"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>4 Hours of Ambient Study Music</h4>
+                        <p>Quiet Quest</p>
+                        <span class="video-duration">⏱️ 4:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/hHW1oY26kxQ" title="Study with me"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Relaxing Jazz Music for Studying</h4>
+                        <p>Coffee Jazz Music</p>
+                        <span class="video-duration">⏱️ 3:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Calm Playlist -->
+        <div class="playlist" data-playlist="calm">
+            <div class="playlist-header">
+                <h3>🌸 Quick Calm</h3>
+                <span class="playlist-count">4 videos</span>
+            </div>
+            <p class="playlist-desc">Short tracks for immediate relaxation and stress relief</p>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/1ZYbU82GVz4" title="Relaxing Music"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Relaxing Music for Stress Relief</h4>
+                        <p>Yellow Brick Cinema</p>
+                        <span class="video-duration">⏱️ 3:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/2OEL4P1Rz04" title="Peaceful Piano"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Beautiful Piano Music for Relaxation</h4>
+                        <p>Soothing Relaxation</p>
+                        <span class="video-duration">⏱️ 3:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/hlWiI4xVXKY" title="5 Minute Meditation"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>5 Minute Relaxation Meditation</h4>
+                        <p>Great Meditation</p>
+                        <span class="video-duration">⏱️ 5:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/77ZozI0rw7w" title="Calming Music"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Calm Piano Music for Deep Relaxation</h4>
+                        <p>Peder B. Helland</p>
+                        <span class="video-duration">⏱️ 1:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Playlist -->
+        <div class="playlist" data-playlist="sleep">
+            <div class="playlist-header">
+                <h3>🌙 Sleep Wind-Down</h3>
+                <span class="playlist-count">4 videos</span>
+            </div>
+            <p class="playlist-desc">Drift off with these soothing sounds for deep sleep</p>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/1fueZCTYkpA" title="Sleep Music"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Deep Sleep Music - 8 Hours</h4>
+                        <p>Soothing Relaxation</p>
+                        <span class="video-duration">⏱️ 8:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/rvaqPPjtxng" title="Sleep Music Delta Waves"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Sleep Music with Delta Waves</h4>
+                        <p>Jason Stephenson</p>
+                        <span class="video-duration">⏱️ 9:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/DWcJFNfaw9c" title="Relaxing Sleep Music"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Deep Relaxing Sleep Music</h4>
+                        <p>Quiet Quest</p>
+                        <span class="video-duration">⏱️ 3:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/Bo-BID7WfVg" title="Sleep Sounds"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Gentle Sleep Music for Insomnia</h4>
+                        <p>Yellow Brick Cinema</p>
+                        <span class="video-duration">⏱️ 10:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nature Sounds -->
+        <div class="playlist" data-playlist="nature">
+            <div class="playlist-header">
+                <h3>🌿 Nature Sounds</h3>
+                <span class="playlist-count">4 videos</span>
+            </div>
+            <p class="playlist-desc">Connect with the calming sounds of nature</p>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/eKFTSSKCzWA" title="Rain Sounds"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Rain Sounds for Sleeping</h4>
+                        <p>Relaxing White Noise</p>
+                        <span class="video-duration">⏱️ 10:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/f77SKdyn-1Y" title="Ocean Waves"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Ocean Waves - 8 Hours</h4>
+                        <p>Nature Soundscapes</p>
+                        <span class="video-duration">⏱️ 8:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/xNN7iTA57jM" title="Forest Sounds"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Forest Birds Sounds</h4>
+                        <p>Paul Dinning</p>
+                        <span class="video-duration">⏱️ 8:00:00</span>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/1By0aJKo2w0" title="Thunderstorm"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>Thunderstorm Sounds for Sleep</h4>
+                        <p>The Relaxed Guy</p>
+                        <span class="video-duration">⏱️ 3:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Playlist tab switching
+    document.querySelectorAll('.playlist-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Update tabs
+            document.querySelectorAll('.playlist-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // Update playlists
+            const playlistName = tab.dataset.playlist;
+            document.querySelectorAll('.playlist').forEach(p => {
+                p.classList.toggle('active', p.dataset.playlist === playlistName);
+            });
+        });
+    });
+
+    // Check URL params for specific playlist
+    const params = new URLSearchParams(window.location.search);
+    const playlistParam = params.get('playlist');
+    if (playlistParam) {
+        const tab = document.querySelector(`.playlist-tab[data-playlist="${playlistParam}"]`);
+        if (tab) tab.click();
+    }
+</script>
+{% endblock %}

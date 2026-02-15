@@ -1,0 +1,396 @@
+/**
+ * Authentication Pages Styles
+ * Login and Registration forms
+ * Uses CSS variables defined in style.css
+ */
+
+/* Auth Section - Works within base template layout */
+.auth-section {
+    min-height: calc(100vh - 180px);
+    /* Account for header and footer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--primary-50) 50%, var(--secondary-50) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Override main-content padding when auth-section is present */
+.main-content:has(.auth-section) {
+    padding: 0;
+    background: transparent;
+}
+
+.auth-container {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    z-index: 2;
+}
+
+.auth-card {
+    background: var(--bg-primary, #ffffff);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 25px 50px -12px var(--shadow-color, rgba(0, 0, 0, 0.1));
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-logo {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-500, #14b8a6), var(--secondary-500, #a855f7));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 10px 30px rgba(20, 184, 166, 0.3);
+}
+
+.auth-logo .logo-icon {
+    font-size: 2rem;
+}
+
+.auth-header h1 {
+    font-size: 1.75rem;
+    color: var(--text-primary, #0f172a);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--text-secondary, #475569);
+    font-size: 0.95rem;
+}
+
+/* Error Message */
+.auth-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #dc2626;
+    font-size: 0.9rem;
+}
+
+.error-icon {
+    font-size: 1.2rem;
+}
+
+/* Form */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--text-primary, #0f172a);
+    font-size: 0.9rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.1rem;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.input-wrapper input,
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    padding: 0.9rem 1rem 0.9rem 2.75rem;
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: var(--bg-secondary, #f8fafc);
+    color: var(--text-primary, #0f172a);
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.input-wrapper input:focus,
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--primary-500, #14b8a6);
+    background-color: var(--bg-primary, #ffffff);
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+}
+
+.input-wrapper input::placeholder,
+.auth-form input::placeholder {
+    color: var(--text-muted, #94a3b8);
+    opacity: 1;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    padding: 0.5rem;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+.password-strength {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.remember-me,
+.agree-terms {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary, #475569);
+}
+
+.remember-me input[type="checkbox"],
+.agree-terms input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--primary-500, #14b8a6);
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.forgot-password {
+    color: var(--primary-500, #14b8a6);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+.auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
+    font-family: inherit;
+}
+
+.auth-btn.primary {
+    background: linear-gradient(135deg, var(--primary-500, #14b8a6), var(--secondary-500, #a855f7));
+    color: white;
+    box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+}
+
+.auth-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4);
+}
+
+.auth-btn.guest {
+    background: var(--bg-secondary, #f8fafc);
+    color: var(--text-primary, #0f172a);
+    border: 2px solid var(--border-color, #e2e8f0);
+}
+
+.auth-btn.guest:hover {
+    background: var(--bg-tertiary, #f1f5f9);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* Divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.auth-divider span {
+    padding: 0 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Footer */
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: var(--primary-500);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Decorative Elements */
+.auth-decoration {
+    position: absolute;
+    inset: -50px;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: floatShape 15s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.3), rgba(168, 85, 247, 0.3));
+    top: -30px;
+    right: -30px;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.3));
+    bottom: 20%;
+    left: -40px;
+    animation-delay: -5s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3));
+    bottom: -20px;
+    right: 20%;
+    animation-delay: -10s;
+}
+
+@keyframes floatShape {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(20px, -30px) rotate(120deg);
+    }
+
+    66% {
+        transform: translate(-15px, 15px) rotate(240deg);
+    }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .auth-section {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(20, 184, 166, 0.1) 50%, rgba(168, 85, 247, 0.1) 100%);
+}
+
+[data-theme="dark"] .auth-card {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .auth-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth-section {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .form-options {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+}

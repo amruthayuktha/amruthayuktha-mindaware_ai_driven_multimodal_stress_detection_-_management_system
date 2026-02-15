@@ -1,0 +1,847 @@
+{% extends "base.html" %}
+
+{% block title %}Stress Scanner - Mind Aware{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+<style>
+    .stress-scanner-section {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .scanner-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .scanner-header h2 {
+        font-size: 1.75rem;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .scanner-header p {
+        color: var(--text-secondary);
+    }
+
+    .scanner-main {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+        .scanner-main {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Camera Section */
+    .camera-section {
+        background: var(--bg-primary);
+        border-radius: var(--radius-2xl);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .camera-header {
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .camera-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .live-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-full);
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .camera-container {
+        position: relative;
+        aspect-ratio: 4/3;
+        background: var(--bg-tertiary);
+    }
+
+    .camera-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scaleX(-1);
+        /* Mirror for natural interaction */
+    }
+
+    .camera-container canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: scaleX(-1);
+    }
+
+    .camera-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 1rem;
+        padding: 2rem;
+    }
+
+    .placeholder-icon {
+        font-size: 4rem;
+        opacity: 0.5;
+    }
+
+    .camera-controls-bar {
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .cam-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-base);
+    }
+
+    .cam-btn.primary {
+        background: var(--primary-500);
+        color: white;
+        border: none;
+    }
+
+    .cam-btn.primary:hover {
+        background: var(--primary-600);
+        transform: scale(1.02);
+    }
+
+    .cam-btn.secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+    .cam-btn.secondary:hover {
+        border-color: var(--primary-500);
+    }
+
+    .cam-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Analysis Panel */
+    .analysis-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Stress Meter */
+    .stress-meter-card {
+        background: var(--bg-primary);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .stress-meter-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .stress-gauge {
+        position: relative;
+        height: 12px;
+        background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .stress-indicator {
+        position: absolute;
+        top: -4px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 3px solid var(--primary-500);
+        border-radius: 50%;
+        transform: translateX(-50%);
+        transition: left 0.5s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .stress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .stress-result {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        text-align: center;
+    }
+
+    .stress-emoji {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stress-level-text {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .stress-message {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .confidence-bar {
+        margin-top: 1rem;
+    }
+
+    .confidence-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+
+    .confidence-track {
+        height: 4px;
+        background: var(--border-color);
+        border-radius: 2px;
+    }
+
+    .confidence-fill {
+        height: 100%;
+        background: var(--primary-500);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+
+    /* Emotion Breakdown */
+    .emotion-breakdown {
+        background: var(--bg-primary);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .emotion-breakdown h3 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .emotion-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .emotion-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .emotion-bar-emoji {
+        font-size: 1.25rem;
+        width: 30px;
+    }
+
+    .emotion-bar-track {
+        flex: 1;
+        height: 8px;
+        background: var(--bg-tertiary);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .emotion-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .emotion-bar-value {
+        width: 35px;
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+
+    /* Recommendations */
+    .recommendations-card {
+        background: var(--bg-primary);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .recommendations-card h3 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .rec-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .rec-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: all var(--transition-base);
+        cursor: pointer;
+    }
+
+    .rec-item:hover {
+        background: var(--primary-500);
+        color: white;
+    }
+
+    .rec-icon {
+        font-size: 1.5rem;
+    }
+
+    .rec-content {
+        flex: 1;
+    }
+
+    .rec-title {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .rec-duration {
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    .rec-arrow {
+        font-size: 1.25rem;
+        opacity: 0.5;
+    }
+
+    /* Tips Box */
+    .tips-box {
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(168, 85, 247, 0.1));
+        border-radius: var(--radius-lg);
+        margin-top: 1rem;
+    }
+
+    .tips-box h4 {
+        font-size: 0.85rem;
+        color: var(--primary-600);
+        margin-bottom: 0.5rem;
+    }
+
+    .tips-box ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    .tips-box li {
+        margin-bottom: 0.25rem;
+    }
+
+    /* Loading State */
+    .loading-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        color: white;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: var(--primary-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Trend Indicator */
+    .trend-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.5rem;
+        border-radius: var(--radius-md);
+        font-size: 0.85rem;
+    }
+
+    .trend-indicator.improving {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+    }
+
+    .trend-indicator.worsening {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+
+    .trend-indicator.stable {
+        background: rgba(107, 114, 128, 0.1);
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="stress-scanner-section">
+    <div class="scanner-header">
+        <h2>🧠 Real-Time Stress Scanner</h2>
+        <p>AI-powered facial analysis to detect your stress levels and provide personalized recommendations</p>
+    </div>
+
+    <div class="scanner-main">
+        <!-- Camera Section -->
+        <div class="camera-section">
+            <div class="camera-header">
+                <span class="camera-title">
+                    <span>📹</span> Live Camera Feed
+                </span>
+                <div class="live-badge" id="liveBadge" style="display: none;">
+                    <span class="live-dot"></span>
+                    <span>ANALYZING</span>
+                </div>
+            </div>
+
+            <div class="camera-container" id="cameraContainer">
+                <video id="stressVideo" autoplay muted playsinline></video>
+                <canvas id="stressCanvas"></canvas>
+
+                <div class="camera-placeholder" id="cameraPlaceholder">
+                    <span class="placeholder-icon">📷</span>
+                    <p>Click "Start Analysis" to begin<br>real-time stress detection</p>
+                </div>
+
+                <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Loading AI models...</p>
+                </div>
+            </div>
+
+            <div class="camera-controls-bar">
+                <button class="cam-btn primary" id="startBtn">
+                    <span>▶️</span> Start Analysis
+                </button>
+                <button class="cam-btn secondary" id="stopBtn" disabled>
+                    <span>⏹️</span> Stop
+                </button>
+            </div>
+        </div>
+
+        <!-- Analysis Panel -->
+        <div class="analysis-panel">
+            <!-- Stress Meter -->
+            <div class="stress-meter-card">
+                <h3><span>📊</span> Stress Level</h3>
+
+                <div class="stress-gauge">
+                    <div class="stress-indicator" id="stressIndicator" style="left: 0%;"></div>
+                </div>
+                <div class="stress-labels">
+                    <span>Calm</span>
+                    <span>Moderate</span>
+                    <span>High</span>
+                </div>
+
+                <div class="stress-result" id="stressResult">
+                    <span class="stress-emoji" id="stressEmoji">😐</span>
+                    <div class="stress-level-text" id="stressLevelText">Waiting for scan...</div>
+                    <div class="stress-message" id="stressMessage">Start the camera to begin analysis</div>
+                </div>
+
+                <div class="confidence-bar">
+                    <div class="confidence-label">Analysis Confidence: <span id="confidenceValue">0%</span></div>
+                    <div class="confidence-track">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="trend-indicator stable" id="trendIndicator" style="display: none;">
+                    <span id="trendIcon">→</span>
+                    <span id="trendText">Stress levels stable</span>
+                </div>
+            </div>
+
+            <!-- Emotion Breakdown -->
+            <div class="emotion-breakdown">
+                <h3>😊 Detected Emotions</h3>
+                <div class="emotion-bars" id="emotionBars">
+                    <div class="emotion-bar-row">
+                        <span class="emotion-bar-emoji">😊</span>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-happy" style="width: 0%; background: #22c55e;"></div>
+                        </div>
+                        <span class="emotion-bar-value" id="val-happy">0%</span>
+                    </div>
+                    <div class="emotion-bar-row">
+                        <span class="emotion-bar-emoji">😐</span>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-neutral" style="width: 0%; background: #6b7280;">
+                            </div>
+                        </div>
+                        <span class="emotion-bar-value" id="val-neutral">0%</span>
+                    </div>
+                    <div class="emotion-bar-row">
+                        <span class="emotion-bar-emoji">😢</span>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-sad" style="width: 0%; background: #3b82f6;"></div>
+                        </div>
+                        <span class="emotion-bar-value" id="val-sad">0%</span>
+                    </div>
+                    <div class="emotion-bar-row">
+                        <span class="emotion-bar-emoji">😰</span>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-fearful" style="width: 0%; background: #8b5cf6;">
+                            </div>
+                        </div>
+                        <span class="emotion-bar-value" id="val-fearful">0%</span>
+                    </div>
+                    <div class="emotion-bar-row">
+                        <span class="emotion-bar-emoji">😠</span>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-angry" style="width: 0%; background: #ef4444;"></div>
+                        </div>
+                        <span class="emotion-bar-value" id="val-angry">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="recommendations-card">
+                <h3><span>✨</span> Recommended Actions</h3>
+                <div class="rec-list" id="recList">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Start the stress scan to get personalized recommendations.
+                    </p>
+                </div>
+
+                <div class="tips-box" id="tipsBox" style="display: none;">
+                    <h4>💡 Tips for You</h4>
+                    <ul id="tipsList"></ul>
+                </div>
+            </div>
+
+            <!-- Music Recommendations -->
+            <div class="recommendations-card">
+                <h3><span>🎵</span> Music for Relaxation</h3>
+                <div class="rec-list" id="musicRecList">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Start the stress scan to get calming music recommendations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/emotionDetector.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize detector
+        const emotionDetector = new EmotionDetector();
+
+        // DOM Elements
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const video = document.getElementById('stressVideo');
+        const canvas = document.getElementById('stressCanvas');
+        const placeholder = document.getElementById('cameraPlaceholder');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const liveBadge = document.getElementById('liveBadge');
+
+        // Analysis elements
+        const stressIndicator = document.getElementById('stressIndicator');
+        const stressEmoji = document.getElementById('stressEmoji');
+        const stressLevelText = document.getElementById('stressLevelText');
+        const stressMessage = document.getElementById('stressMessage');
+        const confidenceValue = document.getElementById('confidenceValue');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const trendIndicator = document.getElementById('trendIndicator');
+        const trendIcon = document.getElementById('trendIcon');
+        const trendText = document.getElementById('trendText');
+        const recList = document.getElementById('recList');
+        const tipsBox = document.getElementById('tipsBox');
+        const tipsList = document.getElementById('tipsList');
+        const musicRecList = document.getElementById('musicRecList');
+
+        let isRunning = false;
+        let currentStressData = null;
+
+        // Handle emotion detection callback - receives full backend analysis
+        emotionDetector.onEmotionDetected = (data) => {
+            currentStressData = data;
+            updateUI(data);
+        };
+
+        function updateUI(data) {
+            // Use backend stress analysis directly
+            const stress = data.stressAnalysis;
+            const trend = data.trend;
+
+            // Update stress gauge
+            const stressPercent = Math.min(stress.score * 100, 100);
+            stressIndicator.style.left = `${stressPercent}%`;
+
+            // Update stress result
+            stressEmoji.textContent = stress.emoji;
+            stressLevelText.textContent = `${stress.level.charAt(0).toUpperCase() + stress.level.slice(1)} Stress`;
+            stressLevelText.style.color = stress.color;
+            stressMessage.textContent = stress.message;
+
+            // Update confidence
+            const confPercent = Math.round(data.confidence * 100);
+            confidenceValue.textContent = `${confPercent}%`;
+            confidenceFill.style.width = `${confPercent}%`;
+
+            // Update emotion bars
+            if (data.allExpressions) {
+                updateEmotionBars(data.allExpressions);
+            }
+
+            // Update trend indicator
+            if (trend && trend.trend !== 'insufficient_data') {
+                trendIndicator.style.display = 'flex';
+                trendIndicator.className = 'trend-indicator ' +
+                    (trend.trend === 'decreasing' ? 'improving' :
+                        trend.trend === 'increasing' ? 'worsening' : 'stable');
+                trendIcon.textContent = trend.trend === 'decreasing' ? '↓' :
+                    trend.trend === 'increasing' ? '↑' : '→';
+                trendText.textContent = trend.message;
+            }
+
+            // Update activity recommendations based on stress level
+            updateActivityRecommendations(stress.level);
+
+            // Update music recommendations from backend
+            if (data.musicRecommendations) {
+                updateMusicRecommendations(data.musicRecommendations);
+            }
+        }
+
+        function updateActivityRecommendations(level) {
+            const recommendations = {
+                high: [
+                    { type: 'breathing', text: 'Try 4-7-8 Breathing', icon: '🌬️', link: '/breathe?pattern=478', duration: '1 min' },
+                    { type: 'grounding', text: '5-4-3-2-1 Grounding', icon: '🌍', action: 'showGrounding', duration: '2 min' },
+                    { type: 'movement', text: 'Shake it Out', icon: '💃', action: 'showMovement', duration: '30 sec' }
+                ],
+                moderate: [
+                    { type: 'breathing', text: 'Box Breathing', icon: '📦', link: '/breathe?pattern=box', duration: '2 min' },
+                    { type: 'game', text: 'Bubble Pop', icon: '🫧', link: '/games', duration: '3 min' }
+                ],
+                low: [
+                    { type: 'journal', text: 'Quick Journal', icon: '📔', link: '/journal', duration: '5 min' },
+                    { type: 'mood', text: 'Log Your Mood', icon: '📊', link: '/mood', duration: '1 min' }
+                ],
+                minimal: [
+                    { type: 'mood', text: 'Log Your Mood', icon: '📊', link: '/mood', duration: '1 min' },
+                    { type: 'journal', text: 'Gratitude Journal', icon: '📔', link: '/journal', duration: '5 min' }
+                ]
+            };
+
+            const recs = recommendations[level] || recommendations.moderate;
+            recList.innerHTML = recs.map(rec => `
+                <a href="${rec.link || '#'}" class="rec-item" ${!rec.link ? `onclick="handleAction('${rec.action}')"` : ''}>
+                    <span class="rec-icon">${rec.icon}</span>
+                    <div class="rec-content">
+                        <div class="rec-title">${rec.text}</div>
+                        <div class="rec-duration">${rec.duration}</div>
+                    </div>
+                    <span class="rec-arrow">→</span>
+                </a>
+            `).join('');
+        }
+
+        function updateMusicRecommendations(musicRecs) {
+            musicRecList.innerHTML = musicRecs.map(music => `
+                <a href="/music?playlist=${music.type}" class="rec-item">
+                    <span class="rec-icon">🎵</span>
+                    <div class="rec-content">
+                        <div class="rec-title">${music.title}</div>
+                        <div class="rec-duration">${music.duration}</div>
+                    </div>
+                    <span class="rec-arrow">→</span>
+                </a>
+            `).join('');
+        }
+
+        function updateEmotionBars(expressions) {
+            // Map backend emotion names to frontend bar IDs
+            const emotionMap = {
+                'happy': 'happy',
+                'neutral': 'neutral', 
+                'sad': 'sad',
+                'fear': 'fearful',
+                'angry': 'angry'
+            };
+            
+            for (const [emotion, barId] of Object.entries(emotionMap)) {
+                const value = expressions[emotion] || 0;
+                const percent = Math.round(value * 100);
+                const bar = document.getElementById(`bar-${barId}`);
+                const val = document.getElementById(`val-${barId}`);
+                if (bar) bar.style.width = `${percent}%`;
+                if (val) val.textContent = `${percent}%`;
+            }
+        }
+
+        // Start analysis
+        startBtn.addEventListener('click', async () => {
+            if (isRunning) return;
+
+            startBtn.disabled = true;
+            loadingOverlay.style.display = 'flex';
+
+            // Initialize models
+            const modelsLoaded = await emotionDetector.init();
+            if (!modelsLoaded) {
+                alert('Failed to load AI models. Please check your connection and try again.');
+                startBtn.disabled = false;
+                loadingOverlay.style.display = 'none';
+                return;
+            }
+
+            // Start camera
+            const cameraStarted = await emotionDetector.startCamera(video, canvas);
+            if (!cameraStarted) {
+                alert('Failed to access camera. Please allow camera permissions.');
+                startBtn.disabled = false;
+                loadingOverlay.style.display = 'none';
+                return;
+            }
+
+            isRunning = true;
+            placeholder.style.display = 'none';
+            loadingOverlay.style.display = 'none';
+            liveBadge.style.display = 'flex';
+            stopBtn.disabled = false;
+            
+            // Reset backend detector
+            await emotionDetector.reset();
+        });
+
+        // Stop analysis
+        stopBtn.addEventListener('click', () => {
+            emotionDetector.stopCamera();
+            isRunning = false;
+            placeholder.style.display = 'flex';
+            liveBadge.style.display = 'none';
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        });
+
+        // Handle custom actions
+        window.handleAction = (action) => {
+            switch (action) {
+                case 'showGrounding':
+                    alert('5-4-3-2-1 Grounding Exercise:\n\n' +
+                        '5 things you can SEE\n' +
+                        '4 things you can TOUCH\n' +
+                        '3 things you can HEAR\n' +
+                        '2 things you can SMELL\n' +
+                        '1 thing you can TASTE\n\n' +
+                        'Take your time with each one.');
+                    break;
+                case 'showMovement':
+                    alert('Shake it Out Exercise:\n\n' +
+                        '1. Stand up and shake your hands vigorously\n' +
+                        '2. Shake your arms and shoulders\n' +
+                        '3. Gently bounce and shake your whole body\n' +
+                        '4. Take 3 deep breaths\n\n' +
+                        'This releases tension stored in your muscles!');
+                    break;
+            }
+        };
+    });
+</script>
+{% endblock %}

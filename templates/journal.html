@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Journal - Mind Aware{% endblock %}
+
+{% block content %}
+<section class="journal-section">
+    <div class="section-header">
+        <h2>📔 Your Journal</h2>
+        <p>A private space to express your thoughts and reflect on your journey.</p>
+    </div>
+
+    <!-- New Entry Form -->
+    <div class="journal-editor-card">
+        <form id="journalForm" class="journal-form">
+            <div class="editor-header">
+                <input type="text" id="journalTitle" name="title" placeholder="Entry title (optional)"
+                    class="journal-title-input">
+                <span class="entry-date" id="currentDate"></span>
+            </div>
+            <textarea id="journalContent" name="content" placeholder="What's on your mind today? Write freely..."
+                class="journal-textarea"></textarea>
+            <div class="editor-footer">
+                <div class="word-count">
+                    <span id="wordCount">0</span> words
+                </div>
+                <div class="editor-actions">
+                    <button type="button" class="clear-btn" id="clearJournalBtn">Clear</button>
+                    <button type="submit" class="save-btn" id="saveJournalBtn">
+                        <span>💾</span> Save Entry
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Journal Prompts -->
+    <div class="journal-prompts-card">
+        <h3>💭 Need Inspiration?</h3>
+        <div class="prompts-carousel">
+            <button class="prompt-btn" data-prompt="What am I grateful for today?">
+                <span>🙏</span> What am I grateful for today?
+            </button>
+            <button class="prompt-btn" data-prompt="How did I take care of myself today?">
+                <span>💚</span> How did I take care of myself today?
+            </button>
+            <button class="prompt-btn" data-prompt="What's one thing I'm proud of?">
+                <span>⭐</span> What's one thing I'm proud of?
+            </button>
+            <button class="prompt-btn" data-prompt="What challenged me today, and how did I handle it?">
+                <span>💪</span> What challenged me today?
+            </button>
+            <button class="prompt-btn" data-prompt="What would make tomorrow a great day?">
+                <span>🌅</span> What would make tomorrow great?
+            </button>
+        </div>
+    </div>
+
+    <!-- Past Entries -->
+    <div class="past-entries-section">
+        <div class="entries-header">
+            <h3>📚 Past Entries</h3>
+            <div class="entries-filter">
+                <input type="text" id="searchEntries" placeholder="Search entries..." class="search-input">
+            </div>
+        </div>
+
+        <!-- Keyword Tags Cloud -->
+        <div class="tags-cloud" id="tagsCloud">
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Entries List -->
+        <div class="entries-list" id="entriesList">
+            <!-- Populated by JavaScript -->
+            <div class="empty-entries">
+                <span class="empty-icon">📝</span>
+                <p>No journal entries yet.</p>
+                <p class="empty-subtitle">Start writing to capture your thoughts!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Insights -->
+    <div class="journal-insights-card" id="journalInsights" style="display: none;">
+        <h3>📊 Your Writing Insights</h3>
+        <div class="insights-grid">
+            <div class="insight-item">
+                <span class="insight-value" id="totalEntriesCount">0</span>
+                <span class="insight-label">Total Entries</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-value" id="currentStreakCount">0</span>
+                <span class="insight-label">Day Streak</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-value" id="avgWordsCount">0</span>
+                <span class="insight-label">Avg Words</span>
+            </div>
+        </div>
+        <div class="common-themes">
+            <h4>Common Themes</h4>
+            <div class="themes-list" id="themesList">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Entry Detail Modal -->
+<div class="modal" id="entryModal">
+    <div class="modal-content entry-modal-content">
+        <button class="modal-close" id="closeEntryModal">&times;</button>
+        <div class="entry-detail">
+            <h2 id="modalEntryTitle"></h2>
+            <p class="entry-date" id="modalEntryDate"></p>
+            <div class="entry-body" id="modalEntryContent"></div>
+            <div class="entry-tags" id="modalEntryTags"></div>
+            <div class="entry-actions">
+                <button class="edit-btn" id="editEntryBtn">✏️ Edit</button>
+                <button class="delete-btn" id="deleteEntryBtn">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/journal.js"></script>
+{% endblock %}

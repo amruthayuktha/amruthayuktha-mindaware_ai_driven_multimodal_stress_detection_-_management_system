@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Mood Tracker - Mind Aware{% endblock %}
+
+{% block content %}
+<section class="mood-section">
+    <div class="section-header">
+        <h2>📊 Mood Check-In</h2>
+        <p>How are you feeling right now? Tracking your mood helps you understand yourself better.</p>
+    </div>
+
+    <!-- Mood Check Form -->
+    <div class="mood-check-card">
+        <form id="moodForm" class="mood-form">
+            <div class="mood-scale">
+                <p class="scale-label">Select your mood level:</p>
+                <div class="emoji-scale">
+                    <button type="button" class="emoji-btn" data-level="1" data-emoji="😢">
+                        <span class="emoji">😢</span>
+                        <span class="label">Very Low</span>
+                    </button>
+                    <button type="button" class="emoji-btn" data-level="2" data-emoji="😕">
+                        <span class="emoji">😕</span>
+                        <span class="label">Low</span>
+                    </button>
+                    <button type="button" class="emoji-btn" data-level="3" data-emoji="😐">
+                        <span class="emoji">😐</span>
+                        <span class="label">Okay</span>
+                    </button>
+                    <button type="button" class="emoji-btn" data-level="4" data-emoji="🙂">
+                        <span class="emoji">🙂</span>
+                        <span class="label">Good</span>
+                    </button>
+                    <button type="button" class="emoji-btn" data-level="5" data-emoji="😄">
+                        <span class="emoji">😄</span>
+                        <span class="label">Great</span>
+                    </button>
+                </div>
+                <input type="hidden" name="mood_level" id="moodLevel" value="">
+                <input type="hidden" name="mood_emoji" id="moodEmoji" value="">
+            </div>
+
+            <div class="mood-feelings">
+                <p class="feelings-label">What are you feeling? (optional)</p>
+                <div class="feeling-tags">
+                    <button type="button" class="feeling-tag" data-feeling="anxious">😰 Anxious</button>
+                    <button type="button" class="feeling-tag" data-feeling="stressed">😫 Stressed</button>
+                    <button type="button" class="feeling-tag" data-feeling="tired">😴 Tired</button>
+                    <button type="button" class="feeling-tag" data-feeling="calm">😌 Calm</button>
+                    <button type="button" class="feeling-tag" data-feeling="happy">😊 Happy</button>
+                    <button type="button" class="feeling-tag" data-feeling="sad">😢 Sad</button>
+                    <button type="button" class="feeling-tag" data-feeling="angry">😤 Angry</button>
+                    <button type="button" class="feeling-tag" data-feeling="overwhelmed">🤯 Overwhelmed</button>
+                    <button type="button" class="feeling-tag" data-feeling="hopeful">🌟 Hopeful</button>
+                    <button type="button" class="feeling-tag" data-feeling="grateful">🙏 Grateful</button>
+                </div>
+                <input type="hidden" name="feelings" id="selectedFeelings" value="">
+            </div>
+
+            <div class="mood-notes">
+                <label for="moodNotes">What's on your mind? (optional)</label>
+                <textarea id="moodNotes" name="notes"
+                    placeholder="Write anything you'd like to remember about today..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-mood-btn" id="submitMoodBtn" disabled>
+                <span>Save Mood</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Mood History -->
+    <div class="mood-history-section">
+        <h3>📈 Your Mood History</h3>
+
+        <!-- Time Range Selector -->
+        <div class="time-range-selector">
+            <button class="range-btn active" data-range="7">7 Days</button>
+            <button class="range-btn" data-range="30">30 Days</button>
+            <button class="range-btn" data-range="90">3 Months</button>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="mood-chart-container">
+            <canvas id="moodChart"></canvas>
+        </div>
+
+        <!-- Mood Insights -->
+        <div class="mood-insights" id="moodInsights">
+            <h4>💡 Insights</h4>
+            <div class="insights-content">
+                <p class="insight-loading">Loading insights...</p>
+            </div>
+        </div>
+
+        <!-- Recent Entries -->
+        <div class="recent-entries">
+            <h4>Recent Entries</h4>
+            <div class="entries-list" id="recentEntriesList">
+                <!-- Populated by JavaScript -->
+                <p class="empty-state">No mood entries yet. Start tracking to see your history!</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="/static/js/mood.js"></script>
+{% endblock %}

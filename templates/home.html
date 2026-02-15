@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Mind Aware{% endblock %}
+
+{% block content %}
+<section class="home-section">
+    <!-- Welcome Hero -->
+    <div class="welcome-hero">
+        <div class="welcome-content">
+            <h2 class="welcome-greeting">Hi, ready to unwind? 🌟</h2>
+            <p class="welcome-subtitle">Take a moment for yourself. What would you like to do today?</p>
+        </div>
+        {% if streak %}
+        <div class="streak-badge">
+            <span class="streak-icon">🔥</span>
+            <span class="streak-count">{{ streak }} day{% if streak != 1 %}s{% endif %}</span>
+            <span class="streak-label">streak</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="feature-cards">
+        <a href="/mood" class="feature-card mood-card">
+            <div class="feature-icon">📊</div>
+            <h3>Check Mood</h3>
+            <p>Track how you're feeling</p>
+        </a>
+
+        <a href="/chat" class="feature-card chat-card">
+            <div class="feature-icon">💬</div>
+            <h3>Talk to Companion</h3>
+            <p>Get personalized support</p>
+        </a>
+
+        <a href="/games" class="feature-card games-card">
+            <div class="feature-icon">🎮</div>
+            <h3>Play & Relax</h3>
+            <p>Unwind with calming games</p>
+        </a>
+
+        <a href="/music" class="feature-card music-card">
+            <div class="feature-icon">🎵</div>
+            <h3>Calm Music</h3>
+            <p>Listen to relaxing sounds</p>
+        </a>
+
+        <a href="/journal" class="feature-card journal-card">
+            <div class="feature-icon">📔</div>
+            <h3>Journal</h3>
+            <p>Write your thoughts</p>
+        </a>
+
+        <a href="/breathe" class="feature-card breathe-card">
+            <div class="feature-icon">🌬️</div>
+            <h3>Breathe</h3>
+            <p>Guided breathing exercises</p>
+        </a>
+
+        <a href="/stress-scan" class="feature-card stress-card">
+            <div class="feature-icon">🧠</div>
+            <h3>Stress Scan</h3>
+            <p>AI-powered stress detection</p>
+        </a>
+    </div>
+
+    <!-- Today's Mood Summary -->
+    <div class="dashboard-widgets">
+        <div class="widget mood-summary-widget">
+            <h3>📈 Today's Mood</h3>
+            {% if today_mood %}
+            <div class="mood-display">
+                <span class="mood-emoji">{{ today_mood.emoji }}</span>
+                <span class="mood-level">{{ today_mood.level }}/5</span>
+            </div>
+            <p class="mood-note">{{ today_mood.notes or "Looking good!" }}</p>
+            {% else %}
+            <div class="empty-state">
+                <p>You haven't logged your mood today</p>
+                <a href="/mood" class="widget-btn">Log Now</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recommended For You -->
+        <div class="widget recommendations-widget">
+            <h3>✨ Recommended for You</h3>
+            <div class="recommendations-list">
+                <div class="recommendation-item">
+                    <span class="rec-icon">🌬️</span>
+                    <div class="rec-content">
+                        <strong>4-7-8 Breathing</strong>
+                        <p>Calm your nervous system</p>
+                    </div>
+                    <a href="/breathe" class="rec-link">Try</a>
+                </div>
+                <div class="recommendation-item">
+                    <span class="rec-icon">🎵</span>
+                    <div class="rec-content">
+                        <strong>Focus Playlist</strong>
+                        <p>Enhance concentration</p>
+                    </div>
+                    <a href="/music?playlist=focus" class="rec-link">Play</a>
+                </div>
+                <div class="recommendation-item">
+                    <span class="rec-icon">🫧</span>
+                    <div class="rec-content">
+                        <strong>Bubble Shooter</strong>
+                        <p>Satisfying stress relief</p>
+                    </div>
+                    <a href="/games" class="rec-link">Play</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="widget stats-widget">
+            <h3>📊 Your Week</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value">{{ mood_entries or 0 }}</span>
+                    <span class="stat-label">Mood logs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ journal_entries or 0 }}</span>
+                    <span class="stat-label">Journal entries</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ breathe_sessions or 0 }}</span>
+                    <span class="stat-label">Breathe sessions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+            <a href="/breathe?pattern=478" class="action-btn breathe-action">
+                <span>🌬️</span> Quick Breathe (1 min)
+            </a>
+            <a href="/chat" class="action-btn chat-action">
+                <span>💬</span> Talk to Someone
+            </a>
+            <a href="/mood" class="action-btn mood-action">
+                <span>📊</span> Quick Mood Check
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Home page specific scripts
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add entrance animations to cards
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('fade-in-up');
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Mind Aware - Your personal stress relief companion. AI-powered chat, relaxation games, calming music, mood tracking, and mindfulness exercises.">
+    <meta name="keywords"
+        content="stress relief, anxiety help, meditation, relaxation, mental health, mood tracking, journaling">
+    <title>{% block title %}Mind Aware - Your Stress Relief Companion{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/pages.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    {% block head %}{% endblock %}
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <span class="logo-icon">🌿</span>
+                    <h1>Mind Aware</h1>
+                </a>
+            </div>
+            <nav class="nav-tabs">
+                <a href="/" class="nav-tab {% if active_page == 'home' %}active{% endif %}">
+                    <span class="tab-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="/chat" class="nav-tab {% if active_page == 'chat' %}active{% endif %}">
+                    <span class="tab-icon">💬</span>
+                    <span>Chat</span>
+                </a>
+                <a href="/mood" class="nav-tab {% if active_page == 'mood' %}active{% endif %}">
+                    <span class="tab-icon">📊</span>
+                    <span>Mood</span>
+                </a>
+                <a href="/journal" class="nav-tab {% if active_page == 'journal' %}active{% endif %}">
+                    <span class="tab-icon">📔</span>
+                    <span>Journal</span>
+                </a>
+                <a href="/breathe" class="nav-tab {% if active_page == 'breathe' %}active{% endif %}">
+                    <span class="tab-icon">🌬️</span>
+                    <span>Breathe</span>
+                </a>
+                <a href="/games" class="nav-tab {% if active_page == 'games' %}active{% endif %}">
+                    <span class="tab-icon">🎮</span>
+                    <span>Games</span>
+                </a>
+                <a href="/music" class="nav-tab {% if active_page == 'music' %}active{% endif %}">
+                    <span class="tab-icon">🎵</span>
+                    <span>Music</span>
+                </a>
+                <a href="/stress-scan" class="nav-tab {% if active_page == 'stress-scan' %}active{% endif %}">
+                    <span class="tab-icon">🧠</span>
+                    <span>Stress Scan</span>
+                </a>
+            </nav>
+            <div class="header-actions">
+                {% if current_user and current_user.is_authenticated %}
+                <a href="/profile" class="profile-btn" title="Profile">
+                    <span>👤</span>
+                </a>
+                {% else %}
+                <a href="/auth/login" class="login-btn">Login</a>
+                {% endif %}
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+            <!-- Mobile menu toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2026 Mind Aware. Your wellbeing matters. 💚</p>
+                <div class="footer-links">
+                    <a href="/about">About</a>
+                    <a href="/privacy">Privacy Policy</a>
+                </div>
+                <p class="disclaimer">
+                    <em>This is a self-help and educational tool, not a substitute for professional mental health
+                        care.</em>
+                </p>
+            </div>
+        </footer>
+
+        <!-- Mini Music Player (fixed at bottom) -->
+        <div class="mini-player" id="miniPlayer" style="display: none;">
+            <div class="mini-player-info">
+                <span class="mini-player-icon">🎵</span>
+                <span class="mini-player-title" id="miniPlayerTitle">No track playing</span>
+            </div>
+            <div class="mini-player-controls">
+                <button class="mini-player-btn" id="miniPlayerPrev">⏮</button>
+                <button class="mini-player-btn play-pause" id="miniPlayerPlayPause">▶</button>
+                <button class="mini-player-btn" id="miniPlayerNext">⏭</button>
+            </div>
+            <div class="mini-player-progress">
+                <div class="mini-progress-bar" id="miniProgressBar"></div>
+            </div>
+            <button class="mini-player-close" id="miniPlayerClose">✕</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    {% block scripts %}{% endblock %}
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        initTheme();
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navTabs = document.querySelector('.nav-tabs');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                navTabs.classList.toggle('mobile-open');
+                mobileMenuToggle.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+
+</html>

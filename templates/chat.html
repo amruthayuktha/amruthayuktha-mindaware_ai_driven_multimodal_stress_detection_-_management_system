@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Mind Aware{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="chat-section">
+    <div class="chat-container">
+        <!-- Emotion Selector -->
+        <div class="emotion-panel">
+            <p class="emotion-label">How are you feeling? <span id="detectedEmotionBadge"
+                    class="detected-emotion-badge"></span></p>
+            <div class="emotion-buttons">
+                <button class="emotion-btn" data-emotion="anxious" title="Anxious">😰</button>
+                <button class="emotion-btn" data-emotion="stressed" title="Stressed">😫</button>
+                <button class="emotion-btn" data-emotion="sad" title="Sad">😢</button>
+                <button class="emotion-btn" data-emotion="tired" title="Tired">😴</button>
+                <button class="emotion-btn" data-emotion="angry" title="Angry">😤</button>
+                <button class="emotion-btn" data-emotion="overwhelmed" title="Overwhelmed">🤯</button>
+                <button class="emotion-btn" data-emotion="neutral" title="Neutral">😐</button>
+            </div>
+            <button class="scan-face-btn" id="quickScanBtn">
+                <span>📹</span> Scan My Face
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>Hello! I'm Mind Aware, your stress relief companion. 🌟</p>
+                    <p>Select how you're feeling above, or use <strong>Face Scan</strong> to detect your
+                        emotion automatically. Then tell me what's on your mind!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="message-avatar">🤖</div>
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">Finding helpful resources...</span>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Tell me what's on your mind..."
+                autocomplete="off">
+            <button class="send-btn" id="sendBtn" aria-label="Send message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Face Scan Modal -->
+    <div class="face-scan-modal" id="faceScanModal" style="display: none;">
+        <div class="face-scan-content">
+            <button class="modal-close" id="closeFaceScan">&times;</button>
+            <h3>📹 Emotion Detection</h3>
+            <div class="camera-view">
+                <video id="emotionVideo" autoplay muted playsinline></video>
+                <canvas id="emotionCanvas"></canvas>
+                <div class="camera-overlay" id="cameraOverlay">
+                    <div class="camera-placeholder">
+                        <span class="placeholder-icon">📷</span>
+                        <p>Click "Start Camera" to begin</p>
+                    </div>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="camera-btn primary" id="startCameraBtn">
+                    <span>▶</span> Start Camera
+                </button>
+                <button class="camera-btn secondary" id="stopCameraBtn" disabled>
+                    <span>⏹</span> Stop Camera
+                </button>
+            </div>
+            <div class="model-loading" id="modelLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Loading AI models...</p>
+            </div>
+            <div class="emotion-result" id="emotionResult" style="display: none;">
+                <span class="detected-emoji" id="detectedEmoji">😐</span>
+                <span class="emotion-name" id="emotionName">Neutral</span>
+                <button class="use-emotion-btn" id="useEmotionBtn">Use This Emotion</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Video Modal -->
+<div class="modal" id="videoModal">
+    <div class="modal-content">
+        <button class="modal-close" id="closeVideoModal">&times;</button>
+        <div class="video-container" id="videoContainer">
+            <!-- Video iframe will be inserted here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/emotionDetector.js"></script>
+<script src="/static/js/chat.js"></script>
+{% endblock %}
